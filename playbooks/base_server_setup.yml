@@ -39,3 +39,23 @@
             protocol: tcp
       tags:
         - configure_iptables
+
+    - name: Install Docker
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.install_docker
+        apply:
+          tags:
+            - install_docker
+      vars:
+        install_docker_user: paco
+        install_docker_daemon_config: |
+          {
+            "storage-driver": "fuse-overlayfs",
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "20m",
+              "compress": "true"
+            }
+          }
+      tags:
+        - install_docker
