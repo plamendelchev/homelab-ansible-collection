@@ -1,0 +1,6 @@
+---
+- name: Add Public SSH Keys
+  ansible.posix.authorized_key:
+    user: "{{ add_ssh_keys_user }}"
+    key: "{{ item }}"
+  loop: "{{ add_ssh_keys_keys }}"
