@@ -1,0 +1,17 @@
+---
+- name: Create User
+  ansible.builtin.user:
+    name: "{{ create_user_name }}"
+    password: "{{ create_user_password }}"
+    groups: "{{ create_user_groups }}"
+    append: true
+    shell: /bin/bash
+
+- name: Ensure passwordless sudo
+  community.general.sudoers:
+    name: "allow-all-{{ create_user_name }}"
+    user: "{{ create_user_name }}"
+    commands: ALL
+    host: ALL
+    nopassword: true
+    validation: required
