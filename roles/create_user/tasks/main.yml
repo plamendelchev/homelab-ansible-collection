@@ -1,0 +1,7 @@
+---
+- name: Create User
+  ansible.builtin.user:
+    name: "{{ create_user_name }}"
+    password: "{{ create_user_password }}"
+    groups: "{{ create_user_groups }}"
+    append: true
