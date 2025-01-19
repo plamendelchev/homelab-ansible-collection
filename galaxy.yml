@@ -1,0 +1,13 @@
+namespace: plamendelchev
+name: homelab
+version: 1.0.0
+readme: README.md
+authors:
+  - Plamen Delchev <plamen.delchev@gmail.com>
+description: Ansible Collection for My Homelab Setup
+license:
+  - GPL-3.0-or-later
+tags: ["homelab", "linux"]
+dependencies: {}
+repository: https://github.com/plamendelchev/homelab-ansible-collection
+build_ignore: []
