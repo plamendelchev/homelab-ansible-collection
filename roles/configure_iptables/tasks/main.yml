@@ -1,0 +1,16 @@
+---
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Install IPTables Packages
+  ansible.builtin.package:
+    name: "{{ iptables_packages }}"
+
+- name: Start, Enable iptables
+  ansible.builtin.service:
+    name: iptables
+    state: started
+    enabled: true
+
+- name: Apply IPTables Rules
+  ansible.builtin.import_tasks: import_rules.yml

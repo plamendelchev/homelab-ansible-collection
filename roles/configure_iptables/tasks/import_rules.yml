@@ -1,0 +1,107 @@
+---
+# tasks file for iptables-rules
+- name: Create TCP chain
+  ansible.builtin.iptables:
+    chain: TCP
+    chain_management: true
+
+- name: Create UDP chain
+  ansible.builtin.iptables:
+    chain: UDP
+    chain_management: true
+
+- name: Allow traffic that belongs to established connections or new valid traffic
+  ansible.builtin.iptables:
+    chain: INPUT
+    match: conntrack
+    ctstate:
+      - RELATED
+      - ESTABLISHED
+    jump: ACCEPT
+
+- name: Accept all traffic from the loopback interface
+  ansible.builtin.iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+
+- name: Drop all traffic with an "INVALID" state match
+  ansible.builtin.iptables:
+    chain: INPUT
+    match: conntrack
+    ctstate: INVALID
+    jump: DROP
+
+- name: Accept all new incoming ICMP echo requests
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: icmp
+    icmp_type: 8
+    match: conntrack
+    ctstate: NEW
+    jump: ACCEPT
+
+- name: Attach the TCP chain to the INPUT chain
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    syn: match
+    match: conntrack
+    ctstate: NEW
+    jump: TCP
+
+- name: Attach the UDP chain to the INPUT chain
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: udp
+    match: conntrack
+    ctstate: NEW
+    jump: UDP
+
+- name: Reject TCP connections with TCP RESET packets if the ports are not opened
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: REJECT
+    reject_with: tcp-reset
+
+- name: Reject UDP streams with ICMP port unreachable if the ports are not opened
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: udp
+    jump: REJECT
+    reject_with: icmp-port-unreachable
+
+- name: Reject all remaining incoming traffic with icmp protocol unreachable messages
+  ansible.builtin.iptables:
+    chain: INPUT
+    jump: REJECT
+    reject_with: icmp-proto-unreachable
+
+- name: Open User Ports
+  ansible.builtin.iptables:
+    chain: "{{ item.protocol | upper }}"
+    protocol: "{{ item.protocol }}"
+    destination_port: "{{ item.port }}"
+    jump: ACCEPT
+  loop: "{{ configure_iptables_open_ports }}"
+
+- name: Set default policy for INPUT chain
+  ansible.builtin.iptables:
+    chain: INPUT
+    policy: DROP
+
+- name: Set default policy for FORWARD chain
+  ansible.builtin.iptables:
+    chain: FORWARD
+    policy: DROP
+
+- name: Set default policy for OUTPUT chain
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    policy: ACCEPT
+
+- name: Save current state
+  community.general.iptables_state:
+    state: saved
+    path: "{{ iptables_state_file }}"
