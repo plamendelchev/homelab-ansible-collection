@@ -1,0 +1,2 @@
+configure_ssh_port: 22
+configure_ssh_custom_config: 00_custom.conf

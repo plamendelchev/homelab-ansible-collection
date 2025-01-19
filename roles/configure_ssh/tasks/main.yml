@@ -1,0 +1,21 @@
+---
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Install SSH Server Package
+  ansible.builtin.package:
+    name: "{{ ssh_package }}"
+
+- name: Start, Enable SSH Server Service
+  ansible.builtin.service:
+    name: "{{ ssh_service_name }}"
+    enabled: true
+    state: started
+
+- name: Ensure SSH Configuration
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: "{{ ssh_config_dir }}/{{ configure_ssh_custom_config }}"
+    mode: "0600"
+  notify:
+    - Reload SSH

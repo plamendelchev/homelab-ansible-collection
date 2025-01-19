@@ -1,0 +1,3 @@
+ssh_package: openssh-server
+ssh_config_dir: /etc/ssh/ssh_config.d
+ssh_service_name: ssh
