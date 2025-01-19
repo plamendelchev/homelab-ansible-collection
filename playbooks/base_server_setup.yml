@@ -1,0 +1,40 @@
+---
+- name: Base Server Setup
+  hosts: "{{ target | default('localhost') }}"
+  tasks:
+    - name: Create User
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.create_user
+      vars:
+        create_user_name: paco
+        create_user_password: "*" # Disabled password
+      tags:
+        - create_user
+
+    - name: Set Public SSH Keys
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.add_ssh_keys
+      vars:
+        add_ssh_keys_user: paco
+        add_ssh_keys_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDzIbfFENDxYMbA3QdLYcKwrO2ppqKN90C9NNDhtzdN6 plamen.delchev@mac.plamm.men"
+      tags:
+        - add_ssh_keys
+
+    - name: Configure SSH
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.configure_ssh
+      vars:
+        configure_ssh_port: 22
+      tags:
+        - configure_ssh
+
+    - name: Configure IPTables
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.configure_iptables
+      vars:
+        configure_iptables_open_ports:
+          - port: 22
+            protocol: tcp
+      tags:
+        - configure_iptables
