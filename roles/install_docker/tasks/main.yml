@@ -1,0 +1,35 @@
+---
+- name: Install Docker
+  ansible.builtin.include_tasks:
+    file: "install-{{ ansible_os_family }}.yml"
+
+- name: Create docker Group
+  ansible.builtin.group:
+    name: docker
+
+- name: Add User to docker Group
+  ansible.builtin.user:
+    name: "{{ install_docker_user }}"
+    groups: docker
+    append: true
+
+- name: Set Docker Daemon Configuration
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: "{{ install_docker_daemon_config }}"
+    mode: "0644"
+
+- name: Create docker Directory in User Home
+  ansible.builtin.file:
+    path: /home/{{ install_docker_user }}/docker
+    state: directory
+    mode: "0755"
+
+- name: Start, Enable docker and containerd Services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - docker.service
+    - containerd.service
