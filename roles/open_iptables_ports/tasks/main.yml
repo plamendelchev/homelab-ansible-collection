@@ -1,0 +1,8 @@
+---
+- name: Open Port {{ item }}
+  ansible.builtin.iptables:
+    chain: "{{ item.protocol | upper }}"
+    protocol: "{{ item.protocol }}"
+    destination_port: "{{ item.port }}"
+    jump: ACCEPT
+  loop: "{{ open_iptables_ports_list }}"
