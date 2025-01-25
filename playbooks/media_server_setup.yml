@@ -1,0 +1,31 @@
+---
+- name: Media Server Setup
+  hosts: "{{ target | default('localhost') }}"
+  become: true
+  vars:
+    user: paco
+  tasks:
+    - name: Set Public SSH Keys
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.add_ssh_keys
+      vars:
+        add_ssh_keys_user: "{{ user }}"
+        add_ssh_keys_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDzIbfFENDxYMbA3QdLYcKwrO2ppqKN90C9NNDhtzdN6 plamen.delchev@mac.plamm.men"
+      tags:
+        - add_ssh_keys
+
+    - name: Copy Docker Compose Files
+      ansible.builtin.copy:
+        src: media/
+        dest: docker/
+        mode: "0755"
+
+    - name: Start Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: docker/
+      register: output
+
+    - name: Show Result
+      ansible.builtin.debug:
+        var: output
