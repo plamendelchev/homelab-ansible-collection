@@ -15,6 +15,14 @@
       tags:
         - add_ssh_keys
 
+    - name: Open Port 80
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.open_iptables_ports
+      vars:
+        open_iptables_ports_list:
+          - port: 80
+            protocol: tcp
+
     - name: Copy Docker Compose Files
       ansible.builtin.copy:
         src: media/
