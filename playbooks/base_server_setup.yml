@@ -1,31 +1,24 @@
 ---
 - name: Base Server Setup
   hosts: "{{ target | default('localhost') }}"
+  vars:
+    user: paco
+    ssh_port: 22
   tasks:
     - name: Create User
       ansible.builtin.include_role:
         name: plamendelchev.homelab.create_user
       vars:
-        create_user_name: paco
+        create_user_name: "{{ user }}"
         create_user_password: "*" # Disabled password
       tags:
         - create_user
-
-    - name: Set Public SSH Keys
-      ansible.builtin.include_role:
-        name: plamendelchev.homelab.add_ssh_keys
-      vars:
-        add_ssh_keys_user: paco
-        add_ssh_keys_keys:
-          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDzIbfFENDxYMbA3QdLYcKwrO2ppqKN90C9NNDhtzdN6 plamen.delchev@mac.plamm.men"
-      tags:
-        - add_ssh_keys
 
     - name: Configure SSH
       ansible.builtin.include_role:
         name: plamendelchev.homelab.configure_ssh
       vars:
-        configure_ssh_port: 22
+        configure_ssh_port: "{{ ssh_port }}"
       tags:
         - configure_ssh
 
@@ -34,7 +27,7 @@
         name: plamendelchev.homelab.configure_iptables
       vars:
         configure_iptables_open_ports:
-          - port: 22
+          - port: "{{ ssh_port }}"
             protocol: tcp
       tags:
         - configure_iptables
@@ -46,7 +39,7 @@
           tags:
             - install_docker
       vars:
-        install_docker_user: paco
+        install_docker_user: "{{ user }}"
         install_docker_daemon_config: |
           {
             "storage-driver": "fuse-overlayfs",
