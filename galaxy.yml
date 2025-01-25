@@ -7,8 +7,9 @@ authors:
 description: Ansible Collection for My Homelab Setup
 license:
   - GPL-3.0-or-later
-tags: ["homelab", "linux"]
+tags: ["homelab", "linux", "docker"]
 dependencies:
   ansible.posix: "<=1.6.2"
+  community.docker: ">=4.1.0"
 repository: https://github.com/plamendelchev/homelab-ansible-collection
 build_ignore: []
