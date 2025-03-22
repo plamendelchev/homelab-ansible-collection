@@ -1,8 +1,15 @@
 ---
+- name: Create Group
+  ansible.builtin.group:
+    name: "{{ create_user_name }}"
+    gid: "{{ create_user_uid }}"
+
 - name: Create User
   ansible.builtin.user:
     name: "{{ create_user_name }}"
+    uid: "{{ create_user_uid }}"
     password: "{{ create_user_password }}"
+    group: "{{ create_user_name }}"
     groups: "{{ create_user_groups }}"
     append: true
     shell: /bin/bash

@@ -1,9 +1,11 @@
 ---
 - name: Base Server Setup
   hosts: "{{ target | default('localhost') }}"
+
   vars:
     user: paco
     ssh_port: 22
+
   tasks:
     - name: Create User
       ansible.builtin.include_role:
@@ -32,6 +34,12 @@
       tags:
         - configure_iptables
 
+    - name: Install Packages
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.install_packages
+      tags:
+        - install_packages
+
     - name: Install Docker
       ansible.builtin.include_role:
         name: plamendelchev.homelab.install_docker
@@ -42,7 +50,7 @@
         install_docker_user: "{{ user }}"
         install_docker_daemon_config: |
           {
-            "storage-driver": "fuse-overlayfs",
+            "storage-driver": "overlay2",
             "log-driver": "json-file",
             "log-opts": {
               "max-size": "20m",
