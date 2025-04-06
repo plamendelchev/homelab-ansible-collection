@@ -6,3 +6,8 @@
     destination_port: "{{ item.port }}"
     jump: ACCEPT
   loop: "{{ open_iptables_ports_list }}"
+
+- name: Save current state
+  community.general.iptables_state:
+    state: saved
+    path: "{{ iptables_state_file }}"
