@@ -1,0 +1,6 @@
+---
+iptables_packages:
+  - iptables
+  - iptables-nft-services
+
+iptables_state_file: /etc/sysconfig/iptables
