@@ -1,0 +1,9 @@
+---
+- name: Install Packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - jq
+    - rsync
+    - tree

@@ -9,7 +9,8 @@ license:
   - GPL-3.0-or-later
 tags: ["homelab", "linux", "docker"]
 dependencies:
-  ansible.posix: "<=1.6.2"
-  community.docker: ">=4.1.0"
+  ansible.posix: "<1.6.2"
+  community.docker: "<4.0.0"
+  community.general: ">=10.1.0"
 repository: https://github.com/plamendelchev/homelab-ansible-collection
 build_ignore: []

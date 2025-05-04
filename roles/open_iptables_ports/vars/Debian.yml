@@ -1,0 +1,2 @@
+---
+iptables_state_file: /etc/iptables/rules.v4

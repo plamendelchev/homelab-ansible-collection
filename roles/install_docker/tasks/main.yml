@@ -18,11 +18,15 @@
     dest: /etc/docker/daemon.json
     content: "{{ install_docker_daemon_config }}"
     mode: "0644"
+  notify:
+    - Restart Docker
 
 - name: Create docker Directory in User Home
   ansible.builtin.file:
     path: /home/{{ install_docker_user }}/docker
     state: directory
+    owner: "{{ install_docker_user }}"
+    group: "{{ install_docker_user }}"
     mode: "0755"
 
 - name: Start, Enable docker and containerd Services

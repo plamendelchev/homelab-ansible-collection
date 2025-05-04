@@ -1,9 +1,11 @@
 ---
 - name: Media Server Setup
   hosts: "{{ target | default('localhost') }}"
+  become: true
+
   vars:
     user: paco
-  become_user: "{{ user }}"
+
   tasks:
     - name: Set Public SSH Keys
       ansible.builtin.include_role:
@@ -15,17 +17,12 @@
       tags:
         - add_ssh_keys
 
-    - name: Copy Docker Compose Files
-      ansible.builtin.copy:
-        src: media/
-        dest: docker/
-        mode: "0755"
-
-    - name: Start Docker Compose
-      community.docker.docker_compose_v2:
-        project_src: docker/
-      register: output
-
-    - name: Show Result
-      ansible.builtin.debug:
-        var: output
+    - name: Open Ports
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.open_iptables_ports
+      vars:
+        open_iptables_ports_list:
+          - port: 80
+            protocol: tcp
+          - port: 443
+            protocol: tcp
