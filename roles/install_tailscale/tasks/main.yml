@@ -1,0 +1,30 @@
+---
+# tasks file for tailscale
+- name: Add tailscale repository
+  ansible.builtin.command:
+    cmd: dnf config-manager --add-repo https://pkgs.tailscale.com/stable/rhel/9/tailscale.repo
+  args:
+    creates: /etc/yum.repos.d/tailscale.repo
+
+- name: Install tailscale
+  ansible.builtin.dnf:
+    name: tailscale
+    state: present
+
+- name: Increase UDP read buffer size
+  ansible.posix.sysctl:
+    name: net.core.rmem_max
+    value: 7340032
+    sysctl_file: /etc/sysctl.d/tailscale.conf
+
+- name: Increase UDP write buffer size
+  ansible.posix.sysctl:
+    name: net.core.wmem_max
+    value: 7340032
+    sysctl_file: /etc/sysctl.d/tailscale.conf
+
+- name: Enable, Start tailscale
+  ansible.builtin.service:
+    name: tailscaled
+    enabled: true
+    state: started
