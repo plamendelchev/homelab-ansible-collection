@@ -1,5 +1,0 @@
----
-name: media-stack
-
-include:
-  - nginx/docker-compose.yml
