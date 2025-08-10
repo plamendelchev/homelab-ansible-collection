@@ -1,0 +1,28 @@
+---
+- name: GitLab Server Setup
+  hosts: "{{ target | default('localhost') }}"
+  become: true
+
+  vars:
+    user: paco
+
+  tasks:
+    - name: Set Public SSH Keys
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.add_ssh_keys
+      vars:
+        add_ssh_keys_user: "{{ user }}"
+        add_ssh_keys_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKsQpIF2EDSqKM8PvaKhe1rYdeAPYyV9nH/y97fdwm4p plamen.delchev@Plamen-Delchev.local"
+      tags:
+        - add_ssh_keys
+
+    - name: Open Ports
+      ansible.builtin.include_role:
+        name: plamendelchev.homelab.open_iptables_ports
+      vars:
+        open_iptables_ports_list:
+          - port: 80
+            protocol: tcp
+          - port: 443
+            protocol: tcp
