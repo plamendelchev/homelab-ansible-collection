@@ -26,3 +26,5 @@
             protocol: tcp
           - port: 443
             protocol: tcp
+          - port: 2222
+            protocol: tcp
