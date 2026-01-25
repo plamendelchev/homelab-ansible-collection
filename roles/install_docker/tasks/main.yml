@@ -28,3 +28,10 @@
     enabled: true
   loop:
     - docker.service
+
+- name: Create common Network
+  community.docker.docker_network:
+    name: common
+    driver: bridge
+    state: present
+    use_ssh_client: true
