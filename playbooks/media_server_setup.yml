@@ -26,5 +26,7 @@
             protocol: tcp
           - port: 443
             protocol: tcp
+          - port: 5580
+            protocol: tcp
           - port: 8120
             protocol: tcp
